@@ -8,48 +8,48 @@ using namespace std;
 
 class Solution {
   private:
-    void DFS(int ele, vector<int>&visited, vector<vector<int>>adjList)
+    void DFS(vector<int>adj[], int node, vector<int>&visited)
     {
-        visited[ele] = 1;
+        visited[node] = 1;
         
-        for(auto it: adjList[ele])
+        for(auto it : adj[node])
         {
             if(!visited[it])
             {
-                DFS(it, visited, adjList);
+                DFS(adj, it, visited);
             }
         }
     }
   public:
     int numProvinces(vector<vector<int>> adj, int V) {
+        vector<int>graph[V];
+        vector<int>visited(V, 0);
         
-        vector<vector<int>>adjList(V);
-        
-        //creation of the adjacency list
         for(int i=0; i<V; i++)
         {
             for(int j=0; j<V; j++)
             {
                 if(adj[i][j] == 1 && i != j)
                 {
-                    adjList[i].push_back(j);
-                    adjList[j].push_back(i);
+                    graph[i].push_back(j);
+                    graph[j].push_back(i);
                 }
             }
         }
         
-        vector<int>visited(V, 0);
         int count = 0;
         for(int i=0; i<V; i++)
         {
             if(!visited[i])
             {
                 count++;
-                DFS(i, visited, adjList);
+                DFS(graph, i, visited);
             }
         }
         
         return count;
+        
+        
     }
 };
 
