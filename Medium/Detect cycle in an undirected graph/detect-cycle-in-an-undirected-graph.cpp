@@ -3,29 +3,21 @@
 using namespace std;
 
 // } Driver Code Ends
+
+
 class Solution {
   private:
-    bool BFS(int src, vector<int> adj[], int visited[])
+    bool isCyclic(int node, int parent, vector<int>adj[], vector<bool>&visited)
     {
-        visited[src] = 1;
-        queue<pair<int, int>>q;
-        q.push({src, -1});
+        visited[node] = true;
         
-        while(!q.empty())
+        for(auto it : adj[node])
         {
-            int node = q.front().first;
-            int parent = q.front().second;
-            q.pop();
-            for(auto adjacentElement:adj[node])
+            if(!visited[it])
             {
-                if(!visited[adjacentElement])
-                {
-                    q.push({adjacentElement, node});
-                    visited[adjacentElement] = 1;
-                    
-                }
-                else if(parent != adjacentElement) return true;
+                if (isCyclic(it, node, adj, visited)) return true;
             }
+            else if(it != parent) return true;
         }
         
         return false;
@@ -33,20 +25,19 @@ class Solution {
   public:
     // Function to detect cycle in an undirected graph.
     bool isCycle(int V, vector<int> adj[]) {
-        
-        int visited[V] = {0};
+        vector<bool>visited(V, false);
         
         for(int i=0; i<V; i++)
         {
-            
             if(!visited[i])
-            {
-                if(BFS(i, adj, visited)) return true;
-            }
+                if(isCyclic(i, -1, adj, visited)) return true;
         }
+        
         return false;
     }
 };
+
+
 
 //{ Driver Code Starts.
 int main() {
