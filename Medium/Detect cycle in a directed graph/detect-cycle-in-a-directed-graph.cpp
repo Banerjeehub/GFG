@@ -5,7 +5,7 @@ using namespace std;
 // } Driver Code Ends
 class Solution {
   private:
-    bool DFS(int node, vector<int>&visited, vector<int>&pathVisited, vector<int> adj[])
+    bool detect(int node, vector<int>&visited, vector<int>&pathVisited, vector<int>adj[])
     {
         visited[node] = 1;
         pathVisited[node] = 1;
@@ -14,7 +14,7 @@ class Solution {
         {
             if(!visited[it])
             {
-                if(DFS(it, visited, pathVisited, adj)) return true;
+                if(detect(it, visited, pathVisited, adj)) return true;
             }
             else if(pathVisited[it]) return true;
         }
@@ -25,19 +25,19 @@ class Solution {
   public:
     // Function to detect cycle in a directed graph.
     bool isCyclic(int V, vector<int> adj[]) {
-       vector<int>visited(V , 0);
-       vector<int>pathVisited(V, 0);
-       
-      
-       for(int i=0; i<V; i++)
-       {
-           if(!visited[i])
-           {
-               if(DFS(i, visited, pathVisited, adj))  return true;
-           }
-       }
-       
-       return false;
+        
+        vector<int>visited(V, 0);
+        vector<int>pathVisited(V, 0);
+        
+        for(int i=0; i<V; i++)
+        {
+            if(!visited[i])
+            {
+                if(detect(i, visited, pathVisited, adj)) return true;
+            }
+        }
+        
+        return false;
     }
 };
 
