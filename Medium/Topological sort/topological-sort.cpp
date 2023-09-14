@@ -5,44 +5,42 @@ using namespace std;
 // } Driver Code Ends
 class Solution
 {
-    private:
-    void topoSort(int node, vector<int>adj[], vector<int>&visited, stack<int>&st)
-    {
-        visited[node] = 1;
-        
-        for(auto it : adj[node])
-        {
-            if(!visited[it])
-            {
-                topoSort(it, adj, visited, st);
-            }
-        }
-        
-        st.push(node);
-    }
 	public:
 	//Function to return list containing vertices in Topological order. 
 	vector<int> topoSort(int V, vector<int> adj[]) 
 	{
-	    vector<int>visited(V, 0);
-	    vector<int>ans;
-	    stack<int>st;
+	    vector<int>topo;
+	    vector<int>inDegree(V, 0);
+	    queue<int>q;
+	    
 	    
 	    for(int i=0; i<V; i++)
 	    {
-	        if(!visited[i])
+	        for(auto it : adj[i])
 	        {
-	            topoSort(i, adj, visited, st);
+	            inDegree[it]++;
 	        }
 	    }
 	    
-	    while(!st.empty())
+	    for(int i=0; i<V; i++)
 	    {
-	        ans.push_back(st.top());
-	        st.pop();
+	        if(inDegree[i] == 0) q.push(i);
 	    }
 	    
-	    return ans;
+	    while(!q.empty())
+	    {
+	        int node = q.front();
+	        q.pop();
+	        topo.push_back(node);
+	        
+	        for(auto it : adj[node])
+	        {
+	            inDegree[it]--;
+	            if(inDegree[it] == 0) q.push(it);
+	        }
+	    }
+	    
+	    return topo;
 	}
 };
 
