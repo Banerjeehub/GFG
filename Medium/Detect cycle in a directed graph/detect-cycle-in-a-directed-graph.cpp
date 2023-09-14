@@ -4,40 +4,44 @@ using namespace std;
 
 // } Driver Code Ends
 class Solution {
-  private:
-    bool detect(int node, vector<int>&visited, vector<int>&pathVisited, vector<int>adj[])
-    {
-        visited[node] = 1;
-        pathVisited[node] = 1;
-        
-        for(auto it : adj[node])
-        {
-            if(!visited[it])
-            {
-                if(detect(it, visited, pathVisited, adj)) return true;
-            }
-            else if(pathVisited[it]) return true;
-        }
-        
-        pathVisited[node] = 0;
-        return false;
-    }
   public:
     // Function to detect cycle in a directed graph.
     bool isCyclic(int V, vector<int> adj[]) {
-        
-        vector<int>visited(V, 0);
-        vector<int>pathVisited(V, 0);
-        
-        for(int i=0; i<V; i++)
-        {
-            if(!visited[i])
-            {
-                if(detect(i, visited, pathVisited, adj)) return true;
-            }
-        }
-        
-        return false;
+       
+       vector<int>topo;
+       vector<int>inDegree(V, 0);
+       queue<int>q;
+       
+       
+       for(int i=0; i<V; i++)
+       {
+           for(auto it : adj[i])
+           {
+               inDegree[it]++;
+           }
+       }
+       
+       for(int i=0; i<V; i++) 
+       {
+           if(inDegree[i] == 0) q.push(i);
+       }
+       
+       int count = 0;
+       while(!q.empty())
+       {
+           int node = q.front();
+           q.pop();
+           count++;
+           
+           for(auto it : adj[node])
+           {
+               inDegree[it]--;
+               if(inDegree[it] == 0) q.push(it);
+           }
+       }
+       
+       if(count == V) return false;
+       else return true;
     }
 };
 
