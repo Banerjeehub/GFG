@@ -4,44 +4,60 @@ using namespace std;
 
 // } Driver Code Ends
 class Solution {
+    
+    private:
+    
+    bool dfs(int start, vector<int>adj[], vector<bool>&visited, vector<bool>&recurStack)
+    {
+        visited[start] = true;
+        recurStack[start] = true;
+        
+        // ppp
+        for(auto it:adj[start])
+        {
+            if(!visited[it])
+            {
+                if(dfs(it,adj,visited,recurStack))
+                {
+                    return true;
+                }
+            }
+            else if(recurStack[it])
+            {
+                return true;
+            }
+        }
+        
+        
+        
+            recurStack[start] = false;
+            return false;
+        
+        
+
+        
+    }
+    
+    
+    
   public:
     // Function to detect cycle in a directed graph.
     bool isCyclic(int V, vector<int> adj[]) {
-       
-       vector<int>topo;
-       vector<int>inDegree(V, 0);
-       queue<int>q;
-       
-       
-       for(int i=0; i<V; i++)
-       {
-           for(auto it : adj[i])
-           {
-               inDegree[it]++;
-           }
-       }
-       
-       for(int i=0; i<V; i++) 
-       {
-           if(inDegree[i] == 0) q.push(i);
-       }
-       
-       int count = 0;
-       while(!q.empty())
-       {
-           int node = q.front();
-           q.pop();
-           count++;
-           
-           for(auto it : adj[node])
-           {
-               inDegree[it]--;
-               if(inDegree[it] == 0) q.push(it);
-           }
-       }
-       
-       if(count == V) return false;
-       else return true;
+        // code here
+        vector<bool>visited(V,false);
+        vector<bool>recurStack(V,false);
+        
+        for(int i=0;i<V;i++)
+        {
+            if(!visited[i])
+            {
+                if(dfs(i,adj,visited,recurStack))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 };
 
