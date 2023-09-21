@@ -6,50 +6,67 @@ using namespace std;
 // } Driver Code Ends
 //User function Template for C++
 
-class Solution {
-  private:
-    void DFS(vector<int>adj[], int node, vector<int>&visited)
+class DisJointSet
+{
+public:
+    vector<int>parent, rank;
+
+    DisJointSet(int n)
     {
-        visited[node] = 1;
-        
-        for(auto it : adj[node])
+        parent.resize(n+1);
+        rank.resize(n+1, 0);
+
+        for(int i=0; i<=n; i++) parent[i] = i;
+    }
+
+    int findUParent(int node)
+    {
+        if(node == parent[node]) return node;
+        else return parent[node] = findUParent(parent[node]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int pu = findUParent(u);
+        int pv = findUParent(v);
+
+        if(pu == pv) return;
+
+        else if(rank[pu] < rank[pv]) parent[pv] = pu;
+
+        else if(rank[pv] < rank[pu]) parent[pu] = pv;
+
+        else
         {
-            if(!visited[it])
-            {
-                DFS(adj, it, visited);
-            }
+            parent[pv] = pu;
+            rank[pu]++;
         }
     }
+};
+class Solution {
   public:
     int numProvinces(vector<vector<int>> adj, int V) {
-        vector<int>graph[V];
-        vector<int>visited(V, 0);
         
+        DisJointSet ds(V);
         for(int i=0; i<V; i++)
         {
             for(int j=0; j<V; j++)
             {
-                if(adj[i][j] == 1 && i != j)
+                if(adj[i][j] == 1)
                 {
-                    graph[i].push_back(j);
-                    graph[j].push_back(i);
+                    ds.unionByRank(i, j);
                 }
             }
         }
         
-        int count = 0;
+        
+        int cnt = 0;
         for(int i=0; i<V; i++)
         {
-            if(!visited[i])
-            {
-                count++;
-                DFS(graph, i, visited);
-            }
+            if(ds.parent[i] == i) cnt++;
         }
         
-        return count;
-        
-        
+        return cnt;
     }
 };
 
