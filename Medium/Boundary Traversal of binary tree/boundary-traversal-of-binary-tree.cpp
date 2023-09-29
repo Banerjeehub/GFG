@@ -103,19 +103,18 @@ struct Node
     Node* left, * right;
 }; */
 #define vin vector<int>
-#define st stack<int>
 #define p push_back
 class Solution {
 private:
     bool isLeaf(Node* root)
     {
+        
         return !root->left and !root->right;
     }
     
-    void leftNodes(Node* root, vin &res)
+    void addLeftNodes(Node* root, vin &res)
     {
         Node* curr = root->left;
-        
         while(curr)
         {
             if(!isLeaf(curr)) res.p(curr->data);
@@ -123,43 +122,47 @@ private:
             else curr = curr->right;
         }
     }
-    void rightNode(Node* root, vin &res)
+    void addLeaves(Node* root, vin &res)
     {
-        Node* curr = root->right;
-        st s;
-        while(curr)
-        {
-            if(!isLeaf(curr)) s.push(curr->data);
-            if(curr->right) curr = curr->right;
-            else curr = curr->left;
-        }
-        
-        while(!s.empty())
-        {
-            res.p(s.top());
-            s.pop();
-        }
-    }
-    void leaves(Node* root, vin &res)
-    {
+        //Node* curr = root;
         if(isLeaf(root))
         {
             res.p(root->data);
             return;
         }
-        if(root->left) leaves(root->left, res);
-        if(root->right) leaves(root->right, res);
+        
+        if(root->left) addLeaves(root->left, res);
+        if(root->right) addLeaves(root->right, res);
+    }
+    
+    void addRightNodes(Node* root, vin &res)
+    {
+        Node* curr = root->right;
+        stack<int>st;
+        while(curr)
+        {
+            if(!isLeaf(curr)) st.push(curr->data);
+            if(curr->right) curr = curr->right;
+            else curr = curr->left;
+        }
+        
+        while(!st.empty())
+        {
+            res.p(st.top());
+            st.pop();
+        }
     }
 public:
+
     vector <int> boundary(Node *root)
     {
-        vin res;
         if(!root) return {};
-        if(!isLeaf(root)) res.p(root->data);
+        vector<int>res;
+        if(!isLeaf(root))res.push_back(root->data);
         
-        leftNodes(root, res);
-        leaves(root, res);
-        rightNode(root, res);
+        addLeftNodes(root, res);
+        addLeaves(root, res);
+        addRightNodes(root, res);
         
         return res;
     }
