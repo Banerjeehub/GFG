@@ -95,10 +95,8 @@ struct Node {
 };
 */
 class Solution {
-  public:
-  
-  //this particular funtion is assigning the parnets of the nodes
-    Node* markingParents(map<Node*, Node*>&mpp, Node* root, int target)
+  private:
+    Node* pMarkings(map<Node* , Node*>&mpp, Node* root, int target)
     {
         queue<Node*>q;
         q.push(root);
@@ -108,11 +106,10 @@ class Solution {
             int size = q.size();
             for(int i=0; i<size; i++)
             {
-                Node* temp = q.front();
+                auto temp = q.front();
                 q.pop();
                 
                 if(temp->data == target) result = temp;
-                
                 if(temp->left)
                 {
                     mpp[temp->left] = temp;
@@ -125,64 +122,60 @@ class Solution {
                 }
             }
         }
+        
         return result;
     }
-    //this particular function returns the maximum time it takes to burn the tree
-    int timeToBurnTree(map<Node*, Node*>mpp, Node* target)
+    int helper(Node* root, Node* node, map<Node*, Node*>mpp)
     {
-        map<Node*, bool>visited;
+        map<Node* , bool> visited;
+        
         queue<Node*>q;
-        q.push(target);
-        visited[target] = true;
-        int maximum = 0;
+        q.push(node);
+        visited[node] = true;
+        int ans = 0;
         while(!q.empty())
         {
             int size = q.size();
-            bool flag = 0;
+            bool flag = false;
             
             for(int i=0; i<size; i++)
             {
-                Node* temp = q.front();
+                auto temp = q.front();
                 q.pop();
                 
-                if(temp->left && !visited[temp->left])
+                if(temp->left and !visited[temp->left])
                 {
-                    flag = 1;
+                    flag = true;
                     visited[temp->left] = true;
                     q.push(temp->left);
                 }
-                
-                if(temp->right && !visited[temp->right])
+                if(temp->right and !visited[temp->right])
                 {
-                    flag = 1;
+                    flag = true;
                     visited[temp->right] = true;
                     q.push(temp->right);
                 }
-                
-                if(mpp[temp] && !visited[mpp[temp]])
+                if(mpp[temp] and !visited[mpp[temp]])
                 {
-                    flag = 1;
+                    flag = true;
                     visited[mpp[temp]] = true;
                     q.push(mpp[temp]);
+                    
                 }
-                
-                
             }
-            if(flag) maximum++;
+            if(flag) ans++;
         }
-        return maximum;
+        return ans;
     }
+  public:
     int minTime(Node* root, int target) 
     {
-       map<Node*, Node*>mpp;
-       Node* node = markingParents(mpp, root, target);
-       int ans = timeToBurnTree(mpp, node);
-       
-       return ans;
+        map<Node*, Node*>mpp;
+        Node* node = pMarkings(mpp, root, target);
+        int ans = helper(root, node, mpp);
+        return ans;
     }
 };
-
-
 
 //{ Driver Code Starts.
 
