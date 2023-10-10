@@ -97,68 +97,117 @@ struct Node
 
 class Solution
 {
-public:
-void findparent(Node* root, Node* pNode,map<Node*,Node*>&mp,int tar, Node* &start){
-        if(!root)return;
-        mp[root]=pNode;
-        if(!start && root->data==tar)start=root;  //this line will not execute after getting first target
-        findparent(root->left,root,mp,tar,start);
-        findparent(root->right,root,mp,tar,start);
+private:
+    Node* markParents(Node* root,map<Node*, Node*>&parentPointer,  int target)
+    {
+        queue<Node*>q;
+        q.push(root);
+        Node* ans;
+        while(!q.empty())
+        {
+            int size = q.size();
+            for(int i=0; i<size; i++)
+            {
+                auto temp = q.front();
+                q.pop();
+                if(temp->data == target) ans = temp;
+                
+                if(temp->left)
+                {
+                    parentPointer[temp->left] = temp;
+                    q.push(temp->left);
+                }
+                if(temp->right)
+                {
+                    parentPointer[temp->right] = temp;
+                    q.push(temp->right);
+                }
+            }
+        }
+        return ans;
     }
- 
+public:
 
     vector <int> KDistanceNodes(Node* root, int target , int k)
     {
-        
-        map<Node*,Node*>mp; 
-        Node *start=NULL;
-        findparent(root,NULL,mp,target,start);
-        
-        map<Node*,bool>vis;
+        map<Node*, Node*> parentPointer;
+        int count = 0;
+        map<Node*,bool>visited;
+        Node* tVal = markParents(root, parentPointer, target);
         queue<Node*>q;
-        q.push(start);
-        vis[start]=true; // mark vis so that again we are not storing same node and it will make infinite loop.
-        int lvl=0;
-        while(!q.empty()){
-            int sz=q.size();
-            if(lvl==k)break;
-            for(int i=0; i<sz; i++){
-                Node* curr=q.front();
+        q.push(tVal);
+        visited[tVal] = true;
+        while(!q.empty())
+        {
+            if(k == count++) break;
+            int size = q.size();
+            
+            for(int i=0; i<size; i++)
+            {
+                auto temp = q.front();
                 q.pop();
-                if(curr->left && !vis[curr->left]){
-                    q.push(curr->left);
-                    vis[curr->left]=true;
-                }
-                if(curr->right && !vis[curr->right]){
-                    q.push(curr->right);
-                    vis[curr->right]=true;
-                    }
-                if(mp[curr] && !vis[mp[curr]]){
-                    q.push(mp[curr]);
-                    vis[mp[curr]]=true;
+                
+                if(temp->left && !visited[temp->left])
+                {
+                    q.push(temp->left);
+                    visited[temp->left] = true;
                 }
                 
-               
+                if(temp->right && !visited[temp->right])
+                {
+                    q.push(temp->right);
+                    visited[temp->right] = true;
+                }
+                if(parentPointer[temp] && !visited[parentPointer[temp]])
+                {
+                    q.push(parentPointer[temp]);
+                    visited[parentPointer[temp]] = true;
+                }
             }
-            lvl++;
         }
         vector<int>ans;
-        ans.clear();
-        while(!q.empty()){
+        while(!q.empty())
+        {
             ans.push_back(q.front()->data);
             q.pop();
-           
         }
-        sort(ans.begin(),ans.end());
-    
-        
+        sort(ans.begin(), ans.end());
         return ans;
-        
     }
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 };
-
 
 //{ Driver Code Starts.
 
