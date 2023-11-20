@@ -84,34 +84,46 @@ Node *buildTree(string str)
 // } Driver Code Ends
 //User function template for C++
 
+/*
+struct Node 
+{
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
 class Solution{
-  private:
-    void solve(Node* root, unordered_map<int, int>&mpp, int k, int &count, int prev)
+  public:
+    void helper(Node* root, int k , unordered_map<int, int>&mpp, int &ans, int prev)
     {
         if(!root) return;
         int curr = prev + root->data;
-        
-        if(mpp.find(curr - k) != mpp.end()) count += mpp[curr-k];
-        if(curr == k) count++;
+        if(mpp.find(curr-k) != mpp.end()) ans += mpp[curr-k];
+        if(curr == k) ans++;
         
         mpp[curr]++;
         
-        solve(root->left, mpp, k, count, curr);
-        solve(root->right, mpp, k, count, curr);
+        helper(root->left,k, mpp, ans, curr);
+        helper(root->right,k, mpp, ans, curr);
         
         mpp[curr]--;
     }
-  public:
     int sumK(Node *root,int k)
     {
-        unordered_map<int, int>mpp;
-        int count = 0;
-        solve(root, mpp, k, count, 0);
-        return count;
+       unordered_map<int, int>mpp;
+       int ans = 0;
+       
+       int prev = 0;
+       helper(root, k, mpp, ans, prev);
+       return ans;
+       
     }
 };
-
-
 
 //{ Driver Code Starts.
 
