@@ -3,63 +3,43 @@
 using namespace std;
 
 // } Driver Code Ends
+
 class Solution {
-    
-    private:
-    
-    bool dfs(int start, vector<int>adj[], vector<bool>&visited, vector<bool>&recurStack)
+  public:
+    // Function to detect cycle in a directed graph.
+    bool dfs(int node, int *pathVisited, int *visited, vector<int> adj[])
     {
-        visited[start] = true;
-        recurStack[start] = true;
+        visited[node] = 1;
+        pathVisited[node] = 1;
         
-        // ppp
-        for(auto it:adj[start])
+        for(auto it : adj[node])
         {
             if(!visited[it])
             {
-                if(dfs(it,adj,visited,recurStack))
-                {
-                    return true;
-                }
+                if(dfs(it, pathVisited, visited, adj)) return true;
             }
-            else if(recurStack[it])
-            {
-                return true;
-            }
+            if(pathVisited[it]) return true;
+            
         }
-        
-        
-        
-            recurStack[start] = false;
-            return false;
-        
-        
-
-        
-    }
-    
-    
-    
-  public:
-    // Function to detect cycle in a directed graph.
-    bool isCyclic(int V, vector<int> adj[]) {
-        // code here
-        vector<bool>visited(V,false);
-        vector<bool>recurStack(V,false);
-        
-        for(int i=0;i<V;i++)
-        {
-            if(!visited[i])
-            {
-                if(dfs(i,adj,visited,recurStack))
-                {
-                    return true;
-                }
-            }
-        }
+        pathVisited[node] = 0;
         return false;
     }
+    bool isCyclic(int v, vector<int> adj[]) {
+       int visited[v] = {0};
+       int pathVisited[v] = {0};
+       for(int i=0; i<v; i++)
+       {
+           if(!visited[i])
+           {
+               if(dfs(i, pathVisited, visited, adj)) return true;
+           }
+       }
+       
+       return false;
+       
+    }
 };
+
 
 //{ Driver Code Starts.
 
