@@ -17,7 +17,9 @@ class Solution
     {
         // Your code here
         // It can be a one liner logic!! Think of it!!
-        return (n>>k)&1;
+        
+        if(n & (1<<k)) return true;
+        return false;
     }
 };
 
